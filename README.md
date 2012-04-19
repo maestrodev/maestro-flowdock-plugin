@@ -2,7 +2,7 @@
 Maestro plugin providing a "task" to send flowdock messages. This
 plugin is a Ruby-based deployable that gets delivered as a Zip file.
 
-<http://smsified.com/>
+<http://flowdock.com/>
 
 Manifest:
 
