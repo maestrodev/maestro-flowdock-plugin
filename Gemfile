@@ -8,7 +8,7 @@ gem 'zippy'
 gem 'maestro_agent', '0.1.1.snapshot'
 
 #dependencies
-gem "flowdock", "0.2.0"
+gem "flowdock", "0.2.0.maestro"
 
 group :test do
   gem 'rspec'

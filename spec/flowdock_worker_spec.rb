@@ -36,7 +36,7 @@ describe MaestroDev::FlowdockWorker do
   
    
       @testee.post_to_flow
-      workitem['fields']['__error__'].should include('Missing Field body')
+      workitem['fields']['__error__'].should include('Missing Field message')
     end
     
     it 'should send a message' do
@@ -44,7 +44,12 @@ describe MaestroDev::FlowdockWorker do
                                        "nickname" => "bob",
                                        "api_token" => "15551212"}}
       @testee.stub(:workitem).and_return(workitem)
-
+      
+      flow = double(:flow)
+      flow.stub(:push_to_chat).and_return(true)
+      
+      Flowdock::Flow.stub(:new).and_return(flow)
+      
       @testee.post_to_flow
       workitem['fields']['__error__'].should eql('')
     end

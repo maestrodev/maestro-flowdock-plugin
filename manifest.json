@@ -1,6 +1,6 @@
 [{
-    "name" : "flowdock",
-    "description" : "Send a Flowdock message",
+    "name" : "flowdock (chat)",
+    "description" : "Send a Flowdock message to chat",
     "license" : "Apache 2.0",
     "author": "Kelly Plummer",
     "version": "1.0-SNAPSHOT",
@@ -20,6 +20,37 @@
   			"api_token":{"value" : "", "type" : "Password", "required" : true},
   			"tags":{"value" : [] , "type" : "Array", "required" : false},
   			"message":{"value" : "", "type" : "String", "required" : true}
+		},
+      "outputs" : {"output" : {"type" : "String"}},
+      "tool_name":"Notification"
+    }
+},
+{
+    "name" : "flowdock (team inbox)",
+    "description" : "Send a Flowdock message to the team inbox",
+    "license" : "Apache 2.0",
+    "author": "Kelly Plummer",
+    "version": "1.0-SNAPSHOT",
+    "class": "MaestroDev::FlowdockWorker",
+    "type":"ruby",
+    "dependencies":[
+  		{
+  			"name" : "flowdock",
+  			"version" : "0.2.0",
+  			"source" : "http://rubygems.org/"
+  		}
+  	],	
+    "task":{
+      "command" : "/flowdock/post_to_team",    
+      "inputs" :  {
+		    "source" : {"value" : "", "type" : "String", "required" : true},
+  			"api_token":{"value" : "", "type" : "Password", "required" : true},
+  			"tags":{"value" : [] , "type" : "Array", "required" : false},
+  			"nickname":{"value" : "", "type" : "String", "required" : false},
+			"email":{"value" : "", "type" : "Email", "required" : true},
+			"subject":{"value" : "", "type" : "String", "required" : true},
+			"link":{"value" : "", "type" : "String", "required" : false},
+			"message":{"value" : "", "type" : "String", "required" : true}									
 		},
       "outputs" : {"output" : {"type" : "String"}},
       "tool_name":"Notification"

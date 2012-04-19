@@ -4,7 +4,7 @@ require 'maestro_agent'
 
 
 module MaestroDev
-  class FlowdockWorker < MaestroWorker
+  class FlowdockWorker < Maestro::MaestroWorker
     
     def validate_input_fields(fields)
       workitem['fields']['__error__'] = ''
@@ -17,19 +17,44 @@ module MaestroDev
     end
 
     def post_to_flow
-      write_output("Validating Flowdock task inputs\n")
-      validate_input_fields(['nickname','api_tocken','message'])
-      return unless workitem['fields']['__error__'].empty?
+      begin
+        write_output("Validating Flowdock task inputs\n")
+        validate_input_fields(['nickname','api_token','message'])
+        return unless workitem['fields']['__error__'].empty?
       
-      post_to_flow(get_field('message'), workitem.get_field('tags'), workitem.get_field('api_token'), workitem.get_field('nickname'))
+        # create a new Flow object with target flow's api token and external user name (enough for posting to Chat)
+        flow = Flowdock::Flow.new(:api_token => get_field('api_token'), :external_user_name => get_field('nickname'))
+
+        # send message to Chat
+        response = flow.push_to_chat(:content => get_field('message'), :tags => get_field('tags'))
+        raise Exception.new unless response
+        
+        write_output("Flowdock message #{get_field('message')} sent\n")
+      rescue Exception => e
+        set_error("Failed to post flowdock message #{e}")
+      end
     end
     
-    def post_to_flow(message, tags, api_token, username)      
-      # create a new Flow object with target flow's api token and external user name (enough for posting to Chat)
-      flow = Flowdock::Flow.new(:api_token => api_token, :external_user_name => username)
+    def post_to_team
+      begin
+        write_output("Validating Flowdock task inputs\n")
+        validate_input_fields(['api_token','message','source','email','subject'])
+        return unless workitem['fields']['__error__'].empty?
+      
+        # create a new Flow object with target flow's api token and sender information for Team Inbox posting
+        flow = Flowdock::Flow.new(:api_token => get_field('api_token'),
+          :source => get_field('source'), :from => {:name => get_field('nickname'), :address => get_field('email')})
 
-      # send message to Chat
-      flow.push_to_chat(:content => message, :tags => tags)
+        # send message to Team Inbox
+        response = flow.push_to_team_inbox(:subject => get_field('subject'),
+          :content => get_field('message'),
+          :tags => get_field('tags'), :link => get_field('link'))
+        raise Exception.new unless response
+        
+        write_output("Flowdock message #{get_field('message')} sent\n")
+      rescue Exception => e
+        set_error("Failed to post flowdock message #{e}")
+      end      
     end
     
   end
