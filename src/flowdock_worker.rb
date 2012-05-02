@@ -25,11 +25,18 @@ module MaestroDev
         # create a new Flow object with target flow's api token and external user name (enough for posting to Chat)
         flow = Flowdock::Flow.new(:api_token => get_field('api_token'), :external_user_name => get_field('nickname'))
 
+        ##
+        # Accommodate an HTTPS proxy setting
+        if proxy = ENV['HTTPS_PROXY']
+          proxy = URI.parse(proxy)
+          Flowdock::Flow.http_proxy proxy.host, proxy.port
+        end
+
         # send message to Chat
         response = flow.push_to_chat(:content => get_field('message'), :tags => get_field('tags'))
         raise Exception.new unless response
         
-        write_output("Flowdock message #{get_field('message')} sent\n")
+        write_output("Flowdock message #{get_field('message')} sent, with tags: #{get_field('tags')}\n")
       rescue Exception => e
         set_error("Failed to post flowdock message #{e}")
       end
@@ -44,6 +51,13 @@ module MaestroDev
         # create a new Flow object with target flow's api token and sender information for Team Inbox posting
         flow = Flowdock::Flow.new(:api_token => get_field('api_token'),
           :source => get_field('source'), :from => {:name => get_field('nickname'), :address => get_field('email')})
+
+        ##
+        # Accommodate an HTTPS proxy setting
+        if proxy = ENV['HTTPS_PROXY']
+          proxy = URI.parse(proxy)
+          Flowdock::Flow.http_proxy proxy.host, proxy.port
+        end
 
         # send message to Team Inbox
         response = flow.push_to_team_inbox(:subject => get_field('subject'),
