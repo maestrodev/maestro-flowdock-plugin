@@ -45,12 +45,12 @@ module MaestroDev
     def post_to_team
       begin
         write_output("Validating Flowdock task inputs\n")
-        validate_input_fields(['api_token','message','source','email','subject'])
+        validate_input_fields(['api_token','message','sender','email','subject'])
         return unless workitem['fields']['__error__'].empty?
       
         # create a new Flow object with target flow's api token and sender information for Team Inbox posting
         flow = Flowdock::Flow.new(:api_token => get_field('api_token'),
-          :source => get_field('source'), :from => {:name => get_field('nickname'), :address => get_field('email')})
+          :source => get_field('sender'), :from => {:name => get_field('nickname'), :address => get_field('email')})
 
         ##
         # Accommodate an HTTPS proxy setting

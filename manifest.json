@@ -41,9 +41,9 @@
   		}
   	],	
     "task":{
-      "command" : "/flowdock/post_to_team",    
+      "command" : "/flowdock/post_to_team",
       "inputs" :  {
-		    "source" : {"value" : "", "type" : "String", "required" : true},
+		    "sender" : {"value" : "Maestro", "type" : "String", "required" : true},
   			"api_token":{"value" : "", "type" : "Password", "required" : true},
   			"tags":{"value" : [] , "type" : "Array", "required" : false},
   			"nickname":{"value" : "", "type" : "String", "required" : false},
