@@ -1,11 +1,11 @@
 source :rubygems
-source "http://maestro:maestro@lucee.maestrodev.net:8081/"
+source "https://gems.gemfury.com/19mFQpkpgWC8xqPZVizB/"
 
 gem 'bundler', '>=1.0.21'
 gem 'rake'
 gem 'zippy'
 
-gem 'maestro_agent', '0.1.4.snapshot'
+gem 'maestro_agent', '1.3.0'
 
 #dependencies
 gem "flowdock",'0.2.0.maestro'
