@@ -1,40 +1,26 @@
-<?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-         xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <groupId>com.maestrodev</groupId>
   <artifactId>maestro-flowdock-plugin</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>Maestro Flowdock Plugin</name>
-  <description>Maestro Plugin For Flowdock</description>
+  <name>maestro-flowdock-plugin</name>
+  <packaging>pom</packaging>
 
   <scm>
-    <connection>scm:git:ssh://git@github.com/maestrodev/maestro-flowdock-plugin.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/maestrodev/maestro-flowdock-plugin.git</developerConnection>
-    <url>https://github.com/maestrodev/maestro-flowdock-plugin</url>
+    <developerConnection>scm:git:git@github.com:maestrodev/maestro-flowdock-plugin.git</developerConnection>
+    <connection>scm:git:git@github.com:maestrodev/maestro-flowdock-plugin.git</connection>
   </scm>
-
-  <organization>
-    <name>MaestroDev</name>
-    <url>http://www.maestrodev.com/</url>
-  </organization>
-
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
 
   <distributionManagement>
     <repository>
       <id>maestro-deploy</id>
-      <url>https://repo.maestrodev.com/archiva/repository/com.maestrodev.lucee.releases/</url>
+      <url>https://repo.maestrodev.com/archiva/repository/public-releases/</url>
     </repository>
     <snapshotRepository>
       <id>maestro-deploy</id>
-      <url>https://repo.maestrodev.com/archiva/repository/com.maestrodev.lucee.snapshots/</url>
+      <url>https://repo.maestrodev.com/archiva/repository/public-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
 
@@ -46,6 +32,8 @@
         <version>1.7</version>
         <executions>
           <execution>
+            <id>attach-zip</id>
+            <phase>package</phase>
             <goals>
               <goal>attach-artifact</goal>
             </goals>
@@ -63,33 +51,5 @@
       </plugin>
     </plugins>
   </build>
-  <profiles>
-    <profile>
-      <id>release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <version>1.0.1</version>
-            <executions>
-              <execution>
-                <id>enforce-no-snapshots</id>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <configuration>
-                  <rules>
-                    <requireReleaseVersion>
-                      <message>No Snapshots Allowed!</message>
-                    </requireReleaseVersion>
-                  </rules>
-                  <fail>true</fail>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+
 </project>
