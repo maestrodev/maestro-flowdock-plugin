@@ -1,9 +1,5 @@
 source :rubygems
-source "https://gems.gemfury.com/19mFQpkpgWC8xqPZVizB/"
-
-gem 'bundler', '>=1.0.21'
-gem 'rake'
-gem 'zippy'
+source "http://gems.gemfury.com/19mFQpkpgWC8xqPZVizB/"
 
 gem 'maestro_agent', '1.3.0'
 
@@ -11,10 +7,15 @@ gem 'maestro_agent', '1.3.0'
 gem "flowdock",'0.2.0.maestro'
 
 
+group :development do
+  gem 'rake', '~>0.9.2.2'
+  gem 'nokogiri'
+  gem 'git'
+  gem 'zippy'
+end
+
 group :test do
   gem 'rspec'
-  gem 'rspec-core'
-
   gem 'rcov', '0.9.11'
   gem 'mocha', '0.10.0'
 end

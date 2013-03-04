@@ -1,3 +1,9 @@
-Gemfile.lock
+target/
+.idea/
+*.iml
 .bundle
-/*.zip
+vendor
+package
+maestro-*-plugin-*.zip
+tmp/
+manifest.json
