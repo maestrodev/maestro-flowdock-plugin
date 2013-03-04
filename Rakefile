@@ -62,7 +62,8 @@ task :package do
 
   # update manifest
   manifest = JSON.parse(IO.read("manifest.template.json"))
-  manifest.each { |m| m['version'] = version }
+  tasks =  manifest['tasks'] || manifest
+  tasks.each { |t| t['version'] = version }
   File.open("manifest.json",'w'){ |f| f.write(JSON.pretty_generate(manifest)) }
 
   Zippy.create zip_file do |z|
@@ -71,6 +72,5 @@ task :package do
     add_dir z, '.', 'images'
     add_file z, '.', 'manifest.json'
     add_file z, '.', 'README.md'
-    add_file z, '.', 'LICENSE'
   end
 end
