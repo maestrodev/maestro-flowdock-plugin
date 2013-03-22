@@ -53,5 +53,20 @@ describe MaestroDev::FlowdockWorker do
       @testee.post_to_flow
       workitem['fields']['__error__'].should eql('')
     end
+
+    it "should deal with timeout conditions" do
+      workitem = {"fields" => {"message" => "testing",
+                                       "nickname" => "bob",
+                                       "api_token" => "15551212"}}
+      @testee.stub(:workitem).and_return(workitem)
+      
+      flow = double(:flow)
+      flow.stub(:push_to_chat) { sleep 60 }
+      
+      Flowdock::Flow.stub(:new).and_return(flow)
+      
+      @testee.post_to_flow
+      workitem['fields']['__error__'].should eql('Failed to post flowdock message Problem sending to flowdock (timeout)')
+    end
   end
 end

@@ -1,11 +1,13 @@
 require 'rubygems'
 require 'flowdock'
 require 'maestro_agent'
+require 'timeout'
 
 
 module MaestroDev
   class FlowdockWorker < Maestro::MaestroWorker
-    
+    FLOWDOCK_TIMEOUT = 15  # Seconds before we decide flowdock isn't going to respond
+
     def validate_input_fields(fields)
       workitem['fields']['__error__'] = ''
       fields.each do |field|
@@ -33,9 +35,10 @@ module MaestroDev
         end
 
         # send message to Chat
-        response = flow.push_to_chat(:content => get_field('message'), :tags => get_field('tags'))
-        raise Exception.new unless response
-        
+        flowdock_push(flow) do |flow|
+            response = flow.push_to_chat(:content => get_field('message'), :tags => get_field('tags'))
+            raise Exception.new unless response
+        end
         write_output("Flowdock message #{get_field('message')} sent, with tags: #{get_field('tags')}\n")
       rescue Exception => e
         set_error("Failed to post flowdock message #{e}")
@@ -60,16 +63,37 @@ module MaestroDev
         end
 
         # send message to Team Inbox
-        response = flow.push_to_team_inbox(:subject => get_field('subject'),
-          :content => get_field('message'),
-          :tags => get_field('tags'), :link => get_field('link'))
-        raise Exception.new unless response
-        
+        flowdock_push(flow) do |flow|
+          response = flow.push_to_team_inbox(:subject => get_field('subject'),
+            :content => get_field('message'),
+            :tags => get_field('tags'), :link => get_field('link'))
+          raise Exception.new unless response
+        end
         write_output("Flowdock message #{get_field('message')} sent\n")
       rescue Exception => e
         set_error("Failed to post flowdock message #{e}")
       end      
     end
     
+    private
+
+    def flowdock_push(flow)
+      begin
+        Timeout::timeout(FLOWDOCK_TIMEOUT) {
+          yield(flow)
+        }
+      rescue Timeout::Error
+        write_output("Timeout after #{FLOWDOCK_TIMEOUT} seconds sending to flowdock, retrying...");
+
+        begin
+          Timeout::timeout(FLOWDOCK_TIMEOUT) {
+            yield(flow)
+          }
+        rescue Timeout::Error
+          write_output("Second Timeout after #{FLOWDOCK_TIMEOUT} seconds sending to flowdock, aborting");
+          raise Exception.new("Problem sending to flowdock (timeout)");
+        end
+      end
+    end
   end
 end
