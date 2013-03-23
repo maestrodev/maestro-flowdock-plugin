@@ -59,7 +59,8 @@ describe MaestroDev::FlowdockWorker do
                                        "nickname" => "bob",
                                        "api_token" => "15551212"}}
       @testee.stub(:workitem).and_return(workitem)
-      
+      @testee.stub(:flowdock_timeout).and_return(1)
+
       flow = double(:flow)
       flow.stub(:push_to_chat) { sleep 60 }
       

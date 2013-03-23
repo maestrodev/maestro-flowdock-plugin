@@ -6,7 +6,7 @@ require 'timeout'
 
 module MaestroDev
   class FlowdockWorker < Maestro::MaestroWorker
-    FLOWDOCK_TIMEOUT = 15  # Seconds before we decide flowdock isn't going to respond
+    FLOWDOCK_TIMEOUT = 60  # Seconds before we decide flowdock isn't going to respond
 
     def validate_input_fields(fields)
       workitem['fields']['__error__'] = ''
@@ -77,16 +77,21 @@ module MaestroDev
     
     private
 
+    # Done so tests can override this (essentially static) variable
+    def flowdock_timeout
+      FLOWDOCK_TIMEOUT
+    end
+
     def flowdock_push(flow)
       begin
-        Timeout::timeout(FLOWDOCK_TIMEOUT) {
+        Timeout::timeout(flowdock_timeout) {
           yield(flow)
         }
       rescue Timeout::Error
         write_output("Timeout after #{FLOWDOCK_TIMEOUT} seconds sending to flowdock, retrying...");
 
         begin
-          Timeout::timeout(FLOWDOCK_TIMEOUT) {
+          Timeout::timeout(flowdock_timeout) {
             yield(flow)
           }
         rescue Timeout::Error
