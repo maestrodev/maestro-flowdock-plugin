@@ -19,55 +19,116 @@ require 'spec_helper'
 
 describe MaestroDev::FlowdockWorker do
 
-  describe 'send_sms()' do
-    before(:each) do
-      @testee = MaestroDev::FlowdockWorker.new
-    end
+  before(:each) do
+    Maestro::MaestroWorker.mock!
+    @testee = MaestroDev::FlowdockWorker.new
+  end
 
-    after(:each) do
-      workitem = nil
-    end
+  after(:each) do
+    workitem = nil
+  end
 
-    it 'should error with no message' do
-      workitem = {'fields' => {"nickname" => "bob",
-                               "api_token" => "15551212"}}
-      @testee.stub(:workitem).and_return(workitem)
-  
-  
-   
+  describe 'post_to_flow' do
+
+    it 'should error when no message is supplied' do
+      workitem = {'fields' => {'nickname' => 'bob',
+                               'api_token' => '15551212'}}
+      @testee.stub(:workitem => workitem)
       @testee.post_to_flow
-      workitem['fields']['__error__'].should include('Missing Field message')
+      @testee.error.should include('Missing Field message')
+    end
+
+    it 'should error when body is too large' do
+      body = <<EOS
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Na pretium odio in odio elementum at bibendum urna sagittis. Maecenas ut purus sed.
+EOS
+      workitem = {'fields' => {'nickname' => 'bob',
+                               'api_token' => '15551212',
+                               'message' => 'test',
+                               'body' => body }}
+      @testee.stub(:workitem => workitem)
+      @testee.post_to_flow
+      @testee.error.should == 'Invalid body, over 140 chars'
     end
     
     it 'should send a message' do
-      workitem = {"fields" => {"message" => "testing",
-                                       "nickname" => "bob",
-                                       "api_token" => "15551212"}}
-      @testee.stub(:workitem).and_return(workitem)
+      workitem = {'fields' => {'message' => 'testing',
+                                       'nickname' => 'bob',
+                                       'api_token' => '15551212'}}
+      @testee.stub(:workitem => workitem)
       
       flow = double(:flow)
-      flow.stub(:push_to_chat).and_return(true)
-      
-      Flowdock::Flow.stub(:new).and_return(flow)
+      flow.stub(:push_to_chat => true)
+      flow.should_receive(:push_to_chat).once
+      Flowdock::Flow.stub(:new => flow)
       
       @testee.post_to_flow
-      workitem['fields']['__error__'].should eql('')
+      @testee.error.empty?.should be true
+
     end
 
-    it "should deal with timeout conditions" do
-      workitem = {"fields" => {"message" => "testing",
-                                       "nickname" => "bob",
-                                       "api_token" => "15551212"}}
-      @testee.stub(:workitem).and_return(workitem)
-      @testee.stub(:flowdock_timeout).and_return(1)
+
+    it 'should deal with timeout conditions' do
+      workitem = {'fields' => {'message' => 'testing',
+                                       'nickname' => 'bob',
+                                       'api_token' => '15551212'}}
+      @testee.stub(:workitem => workitem)
+      @testee.stub(:flowdock_timeout => 1)
 
       flow = double(:flow)
       flow.stub(:push_to_chat) { sleep 60 }
       
-      Flowdock::Flow.stub(:new).and_return(flow)
+      Flowdock::Flow.stub(:new => flow)
       
       @testee.post_to_flow
-      workitem['fields']['__error__'].should eql('Failed to post flowdock message Problem sending to flowdock (timeout)')
+      @testee.error.should == 'Failed to post flowdock message Problem sending to flowdock (timeout)'
+    end
+  end
+
+  describe 'post_to_team' do
+
+    it 'should error when no email is supplied' do
+      workitem = {'fields' => {'nickname' => 'bob',
+                               'api_token' => '15551212'}}
+      @testee.stub(:workitem => workitem)
+      @testee.post_to_team
+      @testee.error.should include('Missing Field message')
+    end
+
+    it 'should error when no email is supplied' do
+      workitem = {'fields' => {'nickname' => 'bob',
+                               'api_token' => '15551212',
+                               'subject' => 'test'}}
+      @testee.stub(:workitem => workitem)
+      @testee.post_to_team
+      @testee.error.should include('Missing Field email')
+    end
+
+    it 'should error when no subject is supplied' do
+      workitem = {'fields' => {'nickname' => 'bob',
+                               'api_token' => '15551212',
+                               'email' => 'dev@maestrodev.com'}}
+      @testee.stub(:workitem => workitem)
+      @testee.post_to_team
+      @testee.error.should include('Missing Field subject')
+    end
+
+    it 'should send a message' do
+      workitem = {'fields' => {'message' => 'testing',
+                               'nickname' => 'bob',
+                               'api_token' => '15551212',
+                               'email' => 'dev@maestrodev.com',
+                               'subject' => 'test'}}
+      @testee.stub(:workitem => workitem)
+
+      flow = double(:flow)
+      flow.stub(:push_to_team_inbox => true)
+      flow.should_receive(:push_to_team_inbox).once
+      Flowdock::Flow.stub(:new => flow)
+
+      @testee.post_to_team
+      @testee.error.empty?.should be true
+
     end
   end
 end

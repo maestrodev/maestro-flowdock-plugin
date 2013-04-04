@@ -1,11 +1,8 @@
-source :rubygems
-source "http://gems.gemfury.com/19mFQpkpgWC8xqPZVizB/"
-
-gem 'maestro_agent', '1.3.0'
+source 'http://rubygems.org' 
 
 #dependencies
-gem "flowdock",'0.2.0.maestro'
-
+gem 'maestro_plugin', '>= 0.0.2'
+gem 'flowdock','0.3.0'
 
 group :development do
   gem 'rake', '~>0.9.2.2'
@@ -17,5 +14,4 @@ end
 group :test do
   gem 'rspec'
   gem 'rcov', '0.9.11'
-  gem 'mocha', '0.10.0'
 end

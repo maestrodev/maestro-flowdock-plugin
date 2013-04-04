@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'rubygems'
 require 'rspec'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../src') unless $LOAD_PATH.include?(File.dirname(__FILE__) + '/../src')
