@@ -39,11 +39,11 @@ PLATFORMS
   java
 
 DEPENDENCIES
-  flowdock (= 0.3.0)
+  flowdock
   git
   maestro_plugin (>= 0.0.2)
   nokogiri
-  rake (~> 0.9.2.2)
-  rcov (= 0.9.11)
+  rake (>= 0.9.2.2)
+  rcov
   rspec
   zippy
