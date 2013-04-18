@@ -21,9 +21,7 @@ end
 
 desc 'Get dependencies with Bundler'
 task :bundle do
-  sh 'bundle package' do |ok, res|
-    raise 'Error bundling' if ! ok
-  end
+  sh 'bundle package'
 end
 
 def add_file( zippyfile, dst_dir, f )
@@ -42,9 +40,7 @@ end
 
 desc 'Package plugin zip'
 task :package do
-  f = File.open('pom.xml')
-  doc = Nokogiri::XML(f.read)
-  f.close
+  f = File.open("pom.xml") { |f| doc = Nokogiri::XML(f.read) }
   artifactId = doc.css('artifactId').first.text
   version = doc.css('version').first.text
   zip_file = "#{artifactId}-#{version}.zip"
@@ -73,5 +69,6 @@ task :package do
     add_dir z, '.', 'images'
     add_file z, '.', 'manifest.json'
     add_file z, '.', 'README.md'
+    add_file z, '.', 'LICENSE'
   end
 end

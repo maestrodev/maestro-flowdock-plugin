@@ -32,6 +32,7 @@
 	  			"message":{"value" : "", "type" : "String", "required" : true}
 			},
 	      "outputs" : {"output" : {"type" : "String"}},
+	      "image": "flowdock.png",
 	      "tool_name":"Notification"
 	    }
 	},
@@ -63,6 +64,7 @@
 				"message":{"value" : "", "type" : "String", "required" : true}									
 			},
 	      "outputs" : {"output" : {"type" : "String"}},
+	      "image": "flowdock.png",
 	      "tool_name":"Notification"
 	    }
 	}]
