@@ -21,7 +21,12 @@ end
 
 desc 'Get dependencies with Bundler'
 task :bundle do
-  sh 'bundle package'
+  sh 'bundle install --without development test' do |ok, res|
+    raise 'Error bundling' if ! ok
+  end
+  sh 'bundle package' do |ok, res|
+    raise 'Error bundling' if ! ok
+  end
 end
 
 def add_file( zippyfile, dst_dir, f )
