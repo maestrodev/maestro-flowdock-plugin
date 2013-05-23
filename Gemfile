@@ -4,14 +4,6 @@ source 'http://rubygems.org'
 gem 'maestro_plugin', '>= 0.0.2'
 gem 'flowdock'
 
-group :development do
-  gem 'rake', '>=0.9.2.2'
-  gem 'nokogiri'
-  gem 'git'
-  gem 'zippy'
-end
-
 group :test do
   gem 'rspec'
-  gem 'rcov'
 end
