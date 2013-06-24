@@ -38,19 +38,6 @@ describe MaestroDev::FlowdockWorker do
       @testee.error.should include('Missing Field message')
     end
 
-    it 'should error when body is too large' do
-      body = <<EOS
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Na pretium odio in odio elementum at bibendum urna sagittis. Maecenas ut purus sed.
-EOS
-      workitem = {'fields' => {'nickname' => 'bob',
-                               'api_token' => '15551212',
-                               'message' => 'test',
-                               'body' => body }}
-      @testee.stub(:workitem => workitem)
-      @testee.post_to_flow
-      @testee.error.should == 'Invalid body, over 140 chars'
-    end
-    
     it 'should send a message' do
       workitem = {'fields' => {'message' => 'testing',
                                        'nickname' => 'bob',
