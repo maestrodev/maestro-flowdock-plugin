@@ -17,11 +17,11 @@
 
 require 'spec_helper'
 
-describe MaestroDev::FlowdockWorker do
+describe MaestroDev::FlowdockPlugin::FlowdockWorker do
 
   before(:each) do
     Maestro::MaestroWorker.mock!
-    @testee = MaestroDev::FlowdockWorker.new
+    @testee = MaestroDev::FlowdockPlugin::FlowdockWorker.new
   end
 
   after(:each) do

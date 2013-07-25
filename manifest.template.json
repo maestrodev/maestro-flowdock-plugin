@@ -14,7 +14,7 @@
 	    "license" : "Apache 2.0",
 	    "author": "Kelly Plummer",
 	    "version": "updated at build time",
-	    "class": "MaestroDev::FlowdockWorker",
+	    "class": "MaestroDev::FlowdockPlugin::FlowdockWorker",
 	    "type":"ruby",
 	    "dependencies":[
 	  		{
@@ -42,7 +42,7 @@
 	    "license" : "Apache 2.0",
 	    "author": "Kelly Plummer",
 	    "version": "updated at build time",
-	    "class": "MaestroDev::FlowdockWorker",
+	    "class": "MaestroDev::FlowdockPlugin::FlowdockWorker",
 	    "type":"ruby",
 	    "dependencies":[
 	  		{
