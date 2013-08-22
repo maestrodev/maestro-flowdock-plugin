@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 #dependencies
-gem 'maestro_plugin', '>= 0.0.2'
+gem 'maestro_plugin', '>= 0.0.16'
 gem 'flowdock'
 
 group :development do

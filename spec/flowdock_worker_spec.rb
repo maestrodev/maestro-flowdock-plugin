@@ -17,11 +17,10 @@
 
 require 'spec_helper'
 
-describe MaestroDev::FlowdockPlugin::FlowdockWorker do
+describe MaestroDev::Plugin::FlowdockWorker do
 
   before(:each) do
     Maestro::MaestroWorker.mock!
-    @testee = MaestroDev::FlowdockPlugin::FlowdockWorker.new
   end
 
   after(:each) do
@@ -30,28 +29,26 @@ describe MaestroDev::FlowdockPlugin::FlowdockWorker do
 
   describe 'post_to_flow' do
 
-    it 'should error when no message is supplied' do
-      workitem = {'fields' => {'nickname' => 'bob',
-                               'api_token' => '15551212'}}
-      @testee.stub(:workitem => workitem)
-      @testee.post_to_flow
-      @testee.error.should include('Missing Field message')
+    it 'should error when missing config' do
+      workitem = {'fields' => {}}
+      subject.perform(:post_to_flow, workitem)
+      subject.error.should include('missing field message')
+      subject.error.should include('missing field api_token')
+      subject.error.should include('missing field nickname')
     end
 
     it 'should send a message' do
       workitem = {'fields' => {'message' => 'testing',
                                        'nickname' => 'bob',
                                        'api_token' => '15551212'}}
-      @testee.stub(:workitem => workitem)
-      
+
       flow = double(:flow)
       flow.stub(:push_to_chat => true)
       flow.should_receive(:push_to_chat).once
       Flowdock::Flow.stub(:new => flow)
       
-      @testee.post_to_flow
-      @testee.error.empty?.should be true
-
+      subject.perform(:post_to_flow, workitem)
+      subject.error.should be_nil
     end
 
 
@@ -59,45 +56,27 @@ describe MaestroDev::FlowdockPlugin::FlowdockWorker do
       workitem = {'fields' => {'message' => 'testing',
                                        'nickname' => 'bob',
                                        'api_token' => '15551212'}}
-      @testee.stub(:workitem => workitem)
-      @testee.stub(:flowdock_timeout => 1)
+      subject.stub(:flowdock_timeout => 1)
 
       flow = double(:flow)
       flow.stub(:push_to_chat) { sleep 60 }
       
       Flowdock::Flow.stub(:new => flow)
       
-      @testee.post_to_flow
-      @testee.error.should == 'Failed to post flowdock message Problem sending to flowdock (timeout)'
+      subject.perform(:post_to_flow, workitem)
+      subject.error.should include 'Problem sending to flowdock (timeout)'
     end
   end
 
   describe 'post_to_team' do
 
-    it 'should error when no email is supplied' do
-      workitem = {'fields' => {'nickname' => 'bob',
-                               'api_token' => '15551212'}}
-      @testee.stub(:workitem => workitem)
-      @testee.post_to_team
-      @testee.error.should include('Missing Field message')
-    end
-
-    it 'should error when no email is supplied' do
-      workitem = {'fields' => {'nickname' => 'bob',
-                               'api_token' => '15551212',
-                               'subject' => 'test'}}
-      @testee.stub(:workitem => workitem)
-      @testee.post_to_team
-      @testee.error.should include('Missing Field email')
-    end
-
-    it 'should error when no subject is supplied' do
-      workitem = {'fields' => {'nickname' => 'bob',
-                               'api_token' => '15551212',
-                               'email' => 'dev@maestrodev.com'}}
-      @testee.stub(:workitem => workitem)
-      @testee.post_to_team
-      @testee.error.should include('Missing Field subject')
+    it 'should error when missing config' do
+      workitem = {'fields' => {}}
+      subject.perform(:post_to_team, workitem)
+      subject.error.should include('missing field api_token')
+      subject.error.should include('missing field message')
+      subject.error.should include('missing field subject')
+      subject.error.should include('missing field email')
     end
 
     it 'should send a message' do
@@ -106,16 +85,14 @@ describe MaestroDev::FlowdockPlugin::FlowdockWorker do
                                'api_token' => '15551212',
                                'email' => 'dev@maestrodev.com',
                                'subject' => 'test'}}
-      @testee.stub(:workitem => workitem)
 
       flow = double(:flow)
       flow.stub(:push_to_team_inbox => true)
       flow.should_receive(:push_to_team_inbox).once
       Flowdock::Flow.stub(:new => flow)
 
-      @testee.post_to_team
-      @testee.error.empty?.should be true
-
+      subject.perform(:post_to_team, workitem)
+      subject.error.should be_nil
     end
   end
 end

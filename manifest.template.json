@@ -1,4 +1,5 @@
 {
+    "image": "flowdock.png",
 	"source_types" : [
 	  {
 	    "name" : "Flowdock",
@@ -14,15 +15,9 @@
 	    "license" : "Apache 2.0",
 	    "author": "Kelly Plummer",
 	    "version": "updated at build time",
-	    "class": "MaestroDev::FlowdockPlugin::FlowdockWorker",
+	    "class": "MaestroDev::Plugin::FlowdockWorker",
 	    "type":"ruby",
-	    "dependencies":[
-	  		{
-	  			"name" : "flowdock",
-	  			"version" : "0.2.0",
-	  			"source" : "http://rubygems.org/"
-	  		}
-	  	],
+        "dependencies":[],
 	    "task":{
 	      "command" : "/flowdock/post_to_flow",    
 	      "inputs" :  {
@@ -32,7 +27,7 @@
 	  			"message":{"value" : "", "type" : "String", "required" : true}
 			},
 	      "outputs" : {"output" : {"type" : "String"}},
-	      "image": "flowdock.png",
+	      "icon": "flowdock.png",
 	      "tool_name":"Notification"
 	    }
 	},
@@ -42,15 +37,9 @@
 	    "license" : "Apache 2.0",
 	    "author": "Kelly Plummer",
 	    "version": "updated at build time",
-	    "class": "MaestroDev::FlowdockPlugin::FlowdockWorker",
+	    "class": "MaestroDev::Plugin::FlowdockWorker",
 	    "type":"ruby",
-	    "dependencies":[
-	  		{
-	  			"name" : "flowdock",
-	  			"version" : "0.2.0",
-	  			"source" : "http://rubygems.org/"
-	  		}
-	  	],	
+        "dependencies":[],
 	    "task":{
 	      "command" : "/flowdock/post_to_team",
 	      "inputs" :  {
@@ -64,7 +53,7 @@
 				"message":{"value" : "", "type" : "String", "required" : true}									
 			},
 	      "outputs" : {"output" : {"type" : "String"}},
-	      "image": "flowdock.png",
+	      "icon": "flowdock.png",
 	      "tool_name":"Notification"
 	    }
 	}]
