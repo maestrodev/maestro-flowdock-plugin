@@ -1,4 +1,6 @@
 # maestro-flowdock-plugin
+[![Code Climate](https://codeclimate.com/github/maestrodev/maestro-flowdock-plugin.png)](https://codeclimate.com/github/maestrodev/maestro-flowdock-plugin)
+
 Maestro plugin providing a "task" to send Flowdock messages. This
 plugin is a Ruby-based deployable that gets delivered as a Zip file.
 
